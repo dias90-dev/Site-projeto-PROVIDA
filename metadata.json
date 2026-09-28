@@ -1,0 +1,6 @@
+{
+  "name": "Projeto Pró-Vida - Agendamento Médico & Gestão Clínica",
+  "description": "Sistema integrado de marcação de consultas médicas, prontuário eletrônico e relatórios para os Centros Médicos Mamã Muxima, Santo André e Santa Ana do Projeto Pró-Vida.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

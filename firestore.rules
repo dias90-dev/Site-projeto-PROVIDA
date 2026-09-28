@@ -1,0 +1,29 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Centros médicos Pró-Vida:
+    // Permite leitura e escrita das coleções principais necessárias para agendamento,
+    // prontuários e notificações em tempo real.
+    match /users/{userId} {
+      allow read, write: if true;
+    }
+
+    match /appointments/{appointmentId} {
+      allow read, write: if true;
+    }
+
+    match /medicalRecords/{recordId} {
+      allow read, write: if true;
+    }
+
+    match /notifications/{notificationId} {
+      allow read, write: if true;
+    }
+  }
+}

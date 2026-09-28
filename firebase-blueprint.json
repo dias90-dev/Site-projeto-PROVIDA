@@ -1,0 +1,118 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User account and profile information for patients, doctors and admins",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "role": { "type": "string", "enum": ["patient", "doctor", "admin"] },
+        "avatar": { "type": "string" },
+        "documentId": { "type": "string" },
+        "specialty": { "type": "string" },
+        "crmOrLicence": { "type": "string" },
+        "assignedCenterId": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "name", "email", "role"]
+    },
+    "Appointment": {
+      "title": "Appointment",
+      "description": "Medical appointment booking record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "protocolNumber": { "type": "string" },
+        "patientId": { "type": "string" },
+        "patientName": { "type": "string" },
+        "patientEmail": { "type": "string" },
+        "patientPhone": { "type": "string" },
+        "patientDocument": { "type": "string" },
+        "centerId": { "type": "string" },
+        "centerName": { "type": "string" },
+        "serviceId": { "type": "string" },
+        "serviceName": { "type": "string" },
+        "doctorId": { "type": "string" },
+        "doctorName": { "type": "string" },
+        "date": { "type": "string" },
+        "time": { "type": "string" },
+        "status": { "type": "string", "enum": ["confirmed", "completed", "cancelled", "in_progress"] },
+        "notes": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "reminderSms": { "type": "boolean" },
+        "reminderEmail": { "type": "boolean" },
+        "reminderSent": { "type": "boolean" },
+        "isTelemedicine": { "type": "boolean" }
+      },
+      "required": ["id", "protocolNumber", "patientName", "centerId", "serviceId", "doctorId", "date", "time", "status"]
+    },
+    "MedicalRecord": {
+      "title": "MedicalRecord",
+      "description": "Patient medical consultation chart, diagnostics and prescriptions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "appointmentId": { "type": "string" },
+        "patientId": { "type": "string" },
+        "patientName": { "type": "string" },
+        "doctorId": { "type": "string" },
+        "doctorName": { "type": "string" },
+        "centerId": { "type": "string" },
+        "date": { "type": "string" },
+        "specialty": { "type": "string" },
+        "symptoms": { "type": "string" },
+        "diagnosis": { "type": "string" },
+        "prescription": { "type": "string" },
+        "labExamOrders": { "type": "string" },
+        "vitalSigns": {
+          "type": "object",
+          "properties": {
+            "bloodPressure": { "type": "string" },
+            "temperature": { "type": "string" },
+            "heartRate": { "type": "string" },
+            "weight": { "type": "string" }
+          }
+        },
+        "clinicalNotes": { "type": "string" }
+      },
+      "required": ["id", "patientName", "doctorId", "doctorName", "date", "diagnosis"]
+    },
+    "NotificationLog": {
+      "title": "NotificationLog",
+      "description": "Audit trail of SMS and Email appointment reminders sent to patients",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "appointmentId": { "type": "string" },
+        "recipientName": { "type": "string" },
+        "recipientContact": { "type": "string" },
+        "type": { "type": "string", "enum": ["sms", "email"] },
+        "timestamp": { "type": "string" },
+        "message": { "type": "string" },
+        "status": { "type": "string", "enum": ["delivered", "pending"] }
+      },
+      "required": ["id", "appointmentId", "recipientContact", "type", "message", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profiles for patients, doctors and healthcare admins"
+    },
+    "/appointments/{appointmentId}": {
+      "schema": "Appointment",
+      "description": "Real-time appointment bookings across the 3 medical centers"
+    },
+    "/medicalRecords/{recordId}": {
+      "schema": "MedicalRecord",
+      "description": "Prontuários eletrônicos, diagnósticos, receitas e exames"
+    },
+    "/notifications/{notificationId}": {
+      "schema": "NotificationLog",
+      "description": "Lembretes e notificações automáticas de consultas"
+    }
+  }
+}
