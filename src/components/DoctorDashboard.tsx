@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { MedicalRecord, Appointment } from '../types';
+import { generateMedicalRecordPDF } from '../utils/pdfGenerator';
 import {
   Calendar,
   Clock,
@@ -18,7 +19,8 @@ import {
   Filter,
   Save,
   MessageSquare,
-  Check
+  Check,
+  Download
 } from 'lucide-react';
 
 export const DoctorDashboard: React.FC = () => {
@@ -86,10 +88,24 @@ export const DoctorDashboard: React.FC = () => {
   const handleOpenProntuarioForAppointment = (apt: Appointment) => {
     setActivePatientApt(apt);
     setPatientName(apt.patientName);
-    setSymptoms(apt.notes || 'Paciente relata queixas clínicas para avaliação médica.');
+    setSymptoms(apt.triage?.mainSymptoms || apt.notes || 'Paciente relata queixas clínicas para avaliação médica.');
     setDiagnosis('Avaliação clínica em andamento.');
     setPrescription('');
     setLabExamOrders('');
+
+    // Pre-fill vital signs from pre-consultation quick triage if present
+    if (apt.triage) {
+      setBloodPressure(apt.triage.bloodPressure);
+      setTemperature(`${apt.triage.temperature} ºC`);
+      setWeight(`${apt.triage.weight} kg`);
+      if (apt.triage.heartRate) setHeartRate(`${apt.triage.heartRate} bpm`);
+      showToast(`⚡ Sinais vitais da Triagem Rápida importados (PA: ${apt.triage.bloodPressure}, T: ${apt.triage.temperature}ºC, Peso: ${apt.triage.weight}kg)`);
+    } else {
+      setBloodPressure('120/80 mmHg');
+      setTemperature('36.5 ºC');
+      setHeartRate('72 bpm');
+      setWeight('65 kg');
+    }
     setActiveTab('records');
   };
 
@@ -156,6 +172,11 @@ export const DoctorDashboard: React.FC = () => {
     updateDoctorSlots(doctorId, slotsList);
   };
 
+  const handleDownloadRecord = (rec: MedicalRecord) => {
+    generateMedicalRecordPDF(rec, currentUser.crmOrLicence || 'OM-ANG 4892/2014');
+    showToast(`📄 Prontuário oficial com logotipo Cáritas baixado com sucesso!`);
+  };
+
   return (
     <div className="py-10 bg-slate-50 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
@@ -188,8 +209,20 @@ export const DoctorDashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Quick stats badge */}
+          {/* Institutional Badge & Quick Stats */}
           <div className="flex items-center gap-3">
+            <div className="hidden sm:flex items-center gap-2 bg-slate-50 px-3.5 py-2.5 rounded-2xl border border-slate-200">
+              <img
+                src="/caritas_logo.png"
+                alt="Logo Oficial Cáritas"
+                className="w-8 h-8 object-contain"
+              />
+              <div className="text-left">
+                <span className="text-[10px] font-bold text-red-600 block uppercase">Projeto Pró-Vida</span>
+                <span className="text-[11px] text-slate-600 font-semibold">Cáritas de Angola</span>
+              </div>
+            </div>
+
             <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200 text-center px-4">
               <span className="text-xs text-slate-400 font-bold uppercase block">Hoje</span>
               <span className="text-xl font-extrabold text-teal-700">
@@ -339,6 +372,33 @@ export const DoctorDashboard: React.FC = () => {
                         <p className="text-xs text-slate-500 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
                           <strong>Queixa do paciente:</strong> {apt.notes}
                         </p>
+                      )}
+
+                      {apt.triage && (
+                        <div className="bg-emerald-50 border border-emerald-200/80 rounded-xl p-2.5 text-xs text-emerald-950 flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="font-extrabold text-emerald-800 flex items-center gap-1">
+                              <Activity className="w-3.5 h-3.5 text-emerald-600" />
+                              Triagem Prévia:
+                            </span>
+                            <span>PA: <strong>{apt.triage.bloodPressure}</strong></span>
+                            <span>•</span>
+                            <span>Tº: <strong>{apt.triage.temperature} ºC</strong></span>
+                            <span>•</span>
+                            <span>Peso: <strong>{apt.triage.weight} kg</strong></span>
+                          </div>
+                          <span
+                            className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                              apt.triage.priorityLevel === 'verde'
+                                ? 'bg-emerald-200 text-emerald-900'
+                                : apt.triage.priorityLevel === 'amarelo'
+                                ? 'bg-amber-200 text-amber-900'
+                                : 'bg-orange-200 text-orange-900'
+                            }`}
+                          >
+                            Risco: {apt.triage.priorityLevel.toUpperCase()}
+                          </span>
+                        </div>
                       )}
                     </div>
 
@@ -634,11 +694,25 @@ export const DoctorDashboard: React.FC = () => {
                 {medicalRecords.map(rec => (
                   <div
                     key={rec.id}
-                    className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs space-y-1.5"
+                    className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs space-y-2"
                   >
-                    <div className="flex items-center justify-between font-bold text-slate-900">
-                      <span>{rec.patientName}</span>
-                      <span className="text-slate-400 font-normal">{rec.date}</span>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between font-bold text-slate-900 gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm">{rec.patientName}</span>
+                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-teal-100 text-teal-800">
+                          {rec.specialty}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <span className="text-slate-400 font-normal">{rec.date}</span>
+                        <button
+                          onClick={() => handleDownloadRecord(rec)}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white hover:bg-teal-50 text-teal-800 text-xs font-bold border border-slate-300 shadow-2xs transition-colors"
+                        >
+                          <Download className="w-3.5 h-3.5 text-teal-600" />
+                          <span>Baixar Prontuário (PDF)</span>
+                        </button>
+                      </div>
                     </div>
                     <div className="text-teal-700 font-semibold">
                       Diagnóstico: {rec.diagnosis}

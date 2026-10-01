@@ -25,5 +25,9 @@ service cloud.firestore {
     match /notifications/{notificationId} {
       allow read, write: if true;
     }
+
+    match /triages/{triageId} {
+      allow read, write: if true;
+    }
   }
 }

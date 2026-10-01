@@ -1,26 +1,58 @@
-import { MedicalCenter, ServiceDetail, Doctor, User, Appointment, MedicalRecord, NotificationLog, MonthlyStats } from '../types';
+import { MedicalCenter, ServiceDetail, Doctor, User, Appointment, MedicalRecord, NotificationLog, MonthlyStats, QuickTriageData } from '../types';
+
+export const PROJECT_LEADERSHIP = {
+  administrator: 'Irmã Ventura',
+  administratorRole: 'Administradora do Projeto Pró-Vida',
+  organization: 'Cáritas de Angola • Projeto Pró-Vida',
+  clinicalDirectors: {
+    mamaMuxima: {
+      name: 'Dra. Emília Kajika Raimundo M. Adão',
+      role: 'Diretora Clínica',
+      center: 'Centro Médico Mamã Muxima',
+      address: 'Bairro Praia do Bispo, Rua Agostinho Neto, Travessa II/BETE, Distrito Urbano da Ingombota, Município de Luanda, Província de Luanda'
+    },
+    santaAna: {
+      name: 'Dr. Ericson Cassoma',
+      role: 'Diretor Clínico',
+      center: 'Centro Médico Santa Ana',
+      address: 'Bairro Palanca, Rua Ngola Yeto, Zona 2, Casa nº 18, Distrito Urbano do Kilamba Kiaxi, Luanda'
+    },
+    santoAndre: {
+      name: 'Dra. Esperança Bento',
+      role: 'Diretora Clínica',
+      center: 'Centro Médico Santo André',
+      address: 'Quarteirão B, Centralidade do Kilamba, Bloco C-12, Município de Belas, Província de Luanda'
+    }
+  }
+};
 
 export const MEDICAL_CENTERS: MedicalCenter[] = [
   {
     id: 'mama-muxima',
     name: 'Centro Médico Mamã Muxima',
     tagline: 'Excelência em Saúde Familiar e Pediátrica',
-    address: 'Av. Deolinda Rodrigues, Km 14, Viana',
-    zone: 'Viana, Luanda',
+    address: 'Bairro Praia do Bispo, Rua Agostinho Neto, Travessa II/BETE, Distrito Urbano da Ingombota, Município de Luanda, Província de Luanda',
+    zone: 'Ingombota / Praia do Bispo, Luanda',
+    municipality: 'Município de Luanda',
+    province: 'Província de Luanda',
+    clinicalDirector: 'Dra. Emília Kajika Raimundo M. Adão',
     phone: '+244 923 112 233',
     emergencyPhone: '+244 912 000 111',
     email: 'mama.muxima@provida.ao',
     hours: 'Segunda a Sábado: 07:30 - 19:30 | Urgências 24h',
     image: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=800&q=80',
-    description: 'Unidade de referência com atendimento humanizado, bloco de ecografia digital de alta definição e laboratório central de análises clínicas.',
-    facilities: ['Laboratório de Análises 24h', 'Sala de Ecografia 4D', 'Enfermaria Pediátrica', 'Farmácia Social Pró-Vida', 'Estacionamento Gratuito']
+    description: 'Unidade de referência com atendimento humanizado, bloco de ecografia normal e laboratório central de análises clínicas. Direção Clínica: Dra. Emília Kajika Raimundo M. Adão.',
+    facilities: ['Laboratório de Análises 24h', 'Sala de Ecografia Normal', 'Enfermaria Pediátrica', 'Farmácia Pró-Vida', 'Estacionamento Gratuito']
   },
   {
     id: 'santo-andre',
     name: 'Centro Médico Santo André',
     tagline: 'Cuidado Integral e Saúde Materno-Infantil',
-    address: 'Quarteirão B, Centralidade do Kilamba, Bloco C-12',
+    address: 'Quarteirão B, Centralidade do Kilamba, Bloco C-12, Município de Belas, Província de Luanda',
     zone: 'Kilamba / Belas, Luanda',
+    municipality: 'Município de Belas',
+    province: 'Província de Luanda',
+    clinicalDirector: 'Dra. Esperança Bento',
     phone: '+244 924 556 677',
     emergencyPhone: '+244 914 222 333',
     email: 'santo.andre@provida.ao',
@@ -33,15 +65,18 @@ export const MEDICAL_CENTERS: MedicalCenter[] = [
     id: 'santa-ana',
     name: 'Centro Médico Santa Ana',
     tagline: 'Proximidade, Diagnóstico e Prevenção Especializada',
-    address: 'Rua Principal dos Comandos, Zona 4, Cazenga',
-    zone: 'Cazenga, Luanda',
+    address: 'Bairro Palanca, Rua Ngola Yeto, Zona 2, Casa nº 18, Distrito Urbano do Kilamba Kiaxi, Luanda',
+    zone: 'Palanca / Kilamba Kiaxi, Luanda',
+    municipality: 'Distrito Urbano do Kilamba Kiaxi',
+    province: 'Província de Luanda',
+    clinicalDirector: 'Dr. Ericson Cassoma',
     phone: '+244 925 889 900',
     emergencyPhone: '+244 915 444 555',
     email: 'santa.ana@provida.ao',
     hours: 'Segunda a Sábado: 07:00 - 18:00',
     image: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=800&q=80',
-    description: 'Polo comunitário de alta resolutividade focado em Clínica Geral, Urologia preventiva, triagem médica rápida e exames laboratoriais admissionais e periódicos.',
-    facilities: ['Gabinete de Urologia', 'Sala de Coleta Rápida', 'Consultório de Triagem', 'Apoio Social Pró-Vida', 'Acessibilidade Total']
+    description: 'Polo comunitário de alta resolutividade focado em Clínica Geral, Urologia preventiva, triagem médica rápida e exames laboratoriais admissionais e periódicos. Direção Clínica: Dr. Ericson Cassoma.',
+    facilities: ['Gabinete de Urologia', 'Sala de Coleta Rápida', 'Consultório de Triagem', 'Atendimento Humanizado Pró-Vida', 'Acessibilidade Total']
   }
 ];
 
@@ -103,9 +138,9 @@ export const SERVICES: ServiceDetail[] = [
   },
   {
     id: 'ecografia',
-    name: 'Ecografia / Ultrassonografia',
-    shortDescription: 'Exames de imagem digital de alta definição: obstétrica, morfológica, abdominal, pélvica e renal.',
-    fullDescription: 'Diagnóstico não invasivo com equipamentos modernos de ultrassom. Fornece laudo descritivo e imagens impressas no ato para o médico assistente.',
+    name: 'Ecografia Normal',
+    shortDescription: 'Exames de ecografia preventiva normal: obstétrica, abdominal, pélvica e renal com laudo médico.',
+    fullDescription: 'Diagnóstico não invasivo por imagem de ecografia normal. Fornece laudo descritivo e relatório impresso no ato para o médico assistente.',
     requirements: [
       'Ecografia Abdominal Total: Jejum alimentar absoluto de 6 a 8 horas',
       'Ecografia Pélvica / Renal: Beber 4 a 6 copos de água 1 hora antes e reter urina',
@@ -135,6 +170,34 @@ export const SERVICES: ServiceDetail[] = [
 
 export const DOCTORS: Doctor[] = [
   {
+    id: 'doc-dir-mama',
+    name: 'Dra. Emília Kajika Raimundo M. Adão',
+    title: 'Diretora Clínica • Centro Mamã Muxima',
+    specialty: 'clinica-geral',
+    specialtyName: 'Clínica Geral & Medicina Familiar',
+    centers: ['mama-muxima'],
+    licenseNumber: 'OM-ANG 3218/2009',
+    bio: 'Diretora Clínica do Centro Médico Mamã Muxima (Ingombota/Praia do Bispo). Mais de 16 anos de liderança em saúde comunitária, medicina preventiva e acolhimento familiar humanizado.',
+    avatar: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=400&q=80',
+    availableDays: ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira'],
+    timeSlots: ['08:00', '09:00', '10:00', '11:00', '14:00', '15:00', '16:00'],
+    experienceYears: 16
+  },
+  {
+    id: 'doc-dir-santa-ana',
+    name: 'Dr. Ericson Cassoma',
+    title: 'Diretor Clínico • Centro Santa Ana',
+    specialty: 'urologia',
+    specialtyName: 'Clínica Geral & Urologia',
+    centers: ['santa-ana'],
+    licenseNumber: 'OM-ANG 4105/2012',
+    bio: 'Diretor Clínico do Centro Médico Santa Ana (Palanca / Kilamba Kiaxi). Especialista em coordenação médica hospitalar, diagnóstico precoce e triagem clínica resolutiva.',
+    avatar: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=400&q=80',
+    availableDays: ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira'],
+    timeSlots: ['08:00', '08:45', '09:30', '10:15', '11:00', '14:00', '14:45', '15:30'],
+    experienceYears: 14
+  },
+  {
     id: 'doc-1',
     name: 'Dr. Manuel Domingos',
     title: 'Especialista em Clínica Geral e Urologia',
@@ -142,8 +205,8 @@ export const DOCTORS: Doctor[] = [
     specialtyName: 'Clínica Geral & Urologia',
     centers: ['mama-muxima', 'santa-ana'],
     licenseNumber: 'OM-ANG 4892/2014',
-    bio: 'Mais de 12 anos de experiência em saúde pública e preventiva. Coordenador clínico do Projeto Pró-Vida, dedicado à humanização hospitalar.',
-    avatar: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=400&q=80',
+    bio: 'Mais de 12 anos de experiência em saúde pública e preventiva. Coordenador de programas do Projeto Pró-Vida, dedicado à humanização hospitalar.',
+    avatar: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=400&q=80',
     availableDays: ['Segunda-feira', 'Quarta-feira', 'Sexta-feira'],
     timeSlots: ['08:00', '08:45', '09:30', '10:15', '11:00', '14:00', '14:45', '15:30', '16:15'],
     experienceYears: 12
@@ -171,7 +234,7 @@ export const DOCTORS: Doctor[] = [
     centers: ['santo-andre', 'mama-muxima'],
     licenseNumber: 'OM-ANG 3540/2011',
     bio: 'Pioneira em programas de parto humanizado e vigilância de gestações de alto risco no Projeto Pró-Vida.',
-    avatar: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=400&q=80',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80',
     availableDays: ['Terça-feira', 'Quarta-feira', 'Sexta-feira'],
     timeSlots: ['08:00', '09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00'],
     experienceYears: 15
@@ -185,7 +248,7 @@ export const DOCTORS: Doctor[] = [
     centers: ['santa-ana', 'mama-muxima'],
     licenseNumber: 'OM-ANG 7821/2019',
     bio: 'Especialista em saúde do homem, prevenção do cancro de próstata e litíase renal com técnicas minimamente invasivas.',
-    avatar: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=400&q=80',
+    avatar: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=400&q=80',
     availableDays: ['Segunda-feira', 'Quarta-feira', 'Sábado'],
     timeSlots: ['08:00', '08:45', '09:30', '10:15', '11:00', '14:00', '14:45'],
     experienceYears: 8
@@ -195,11 +258,11 @@ export const DOCTORS: Doctor[] = [
     name: 'Dr. Bernardo Cassoma',
     title: 'Médico Imagiologista & Ecografista',
     specialty: 'ecografia',
-    specialtyName: 'Ecografia Diagnóstica',
+    specialtyName: 'Ecografia Normal',
     centers: ['mama-muxima', 'santo-andre', 'santa-ana'],
     licenseNumber: 'OM-ANG 5291/2015',
-    bio: 'Experiência sólida em ecografia morfológica fetal, Doppler vascular e ultrassonografia de órgãos abdominais e pélvicos.',
-    avatar: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=400&q=80',
+    bio: 'Experiência sólida em ecografia normal, incluindo exames abdominais, pélvicos, renais e obstétricos com diagnóstico rigoroso e atendimento humanizado.',
+    avatar: 'https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&w=400&q=80',
     availableDays: ['Terça-feira', 'Quinta-feira', 'Sábado'],
     timeSlots: ['08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '14:00', '14:30'],
     experienceYears: 11
@@ -213,7 +276,7 @@ export const DOCTORS: Doctor[] = [
     centers: ['mama-muxima', 'santa-ana', 'santo-andre'],
     licenseNumber: 'CRB-ANG 1920/2016',
     bio: 'Bioquímica e médica perita com foco em exames de admissão profissional, check-ups biológicos rápidos e controle de qualidade laboratorial.',
-    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80',
+    avatar: 'https://images.unsplash.com/photo-1594824813583-02f5a54db68b?auto=format&fit=crop&w=400&q=80',
     availableDays: ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira'],
     timeSlots: ['07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00'],
     experienceYears: 10
@@ -231,6 +294,28 @@ export const DEMO_USERS: User[] = [
     avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80'
   },
   {
+    id: 'doc-dir-mama',
+    name: 'Dra. Emília Kajika Raimundo M. Adão',
+    email: 'dra.emilia.adao@provida.ao',
+    phone: '+244 923 112 233',
+    role: 'doctor',
+    specialty: 'Diretora Clínica (Mamã Muxima)',
+    crmOrLicence: 'OM-ANG 3218/2009',
+    assignedCenterId: 'mama-muxima',
+    avatar: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=200&q=80'
+  },
+  {
+    id: 'doc-dir-santa-ana',
+    name: 'Dr. Ericson Cassoma',
+    email: 'dr.ericson.cassoma@provida.ao',
+    phone: '+244 925 889 900',
+    role: 'doctor',
+    specialty: 'Diretor Clínico (Santa Ana)',
+    crmOrLicence: 'OM-ANG 4105/2012',
+    assignedCenterId: 'santa-ana',
+    avatar: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=200&q=80'
+  },
+  {
     id: 'doc-1',
     name: 'Dr. Manuel Domingos',
     email: 'dr.manuel@provida.ao',
@@ -239,7 +324,7 @@ export const DEMO_USERS: User[] = [
     specialty: 'Clínica Geral & Urologia',
     crmOrLicence: 'OM-ANG 4892/2014',
     assignedCenterId: 'mama-muxima',
-    avatar: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=200&q=80'
+    avatar: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=200&q=80'
   },
   {
     id: 'doc-2',
@@ -254,11 +339,11 @@ export const DEMO_USERS: User[] = [
   },
   {
     id: 'user-admin',
-    name: 'Eng. Carlos Kituxi',
-    email: 'admin@provida.ao',
+    name: 'Irmã Ventura',
+    email: 'irma.ventura@provida.ao',
     phone: '+244 923 000 999',
     role: 'admin',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80'
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80'
   }
 ];
 
@@ -285,7 +370,43 @@ export const INITIAL_APPOINTMENTS: Appointment[] = [
     reminderSms: true,
     reminderEmail: true,
     reminderSent: true,
-    isTelemedicine: false
+    isTelemedicine: false,
+    triage: {
+      id: 'tri-001',
+      appointmentId: 'apt-101',
+      protocolNumber: 'PV-2026-0901',
+      patientId: 'user-patient',
+      patientName: 'Ana Paula Silva',
+      patientPhone: '+244 923 456 789',
+      patientDocument: '006892341LA042',
+      centerId: 'mama-muxima',
+      centerName: 'Centro Médico Mamã Muxima',
+      serviceId: 'clinica-geral',
+      serviceName: 'Clínica Geral',
+      date: '2026-09-28',
+      time: '08:45',
+      weight: '64.5',
+      height: '168',
+      bmi: '22.9',
+      bmiCategory: 'Peso Normal',
+      temperature: '36.5',
+      temperatureStatus: 'normal',
+      bloodPressureSystolic: '120',
+      bloodPressureDiastolic: '80',
+      bloodPressure: '120/80 mmHg',
+      bloodPressureStatus: 'normal',
+      heartRate: '72',
+      oxygenSaturation: '98',
+      bloodGlucose: '92',
+      painLevel: 1,
+      mainSymptoms: 'Leve cansaço vespertino e aferição preventiva para consulta.',
+      symptomDuration: 'Há 3 dias',
+      allergies: 'Nenhuma alergia conhecida a medicamentos',
+      currentMedications: 'Nenhum medicamento contínuo',
+      priorityLevel: 'verde',
+      observations: 'Sinais vitais normais. Triagem rápida realizada previamente no Portal do Paciente.',
+      submittedAt: '2026-09-28T08:45:00.000Z'
+    }
   },
   {
     id: 'apt-102',
@@ -298,7 +419,7 @@ export const INITIAL_APPOINTMENTS: Appointment[] = [
     centerId: 'santo-andre',
     centerName: 'Centro Médico Santo André',
     serviceId: 'ecografia',
-    serviceName: 'Ecografia / Ultrassonografia',
+    serviceName: 'Ecografia Normal',
     doctorId: 'doc-5',
     doctorName: 'Dr. Bernardo Cassoma',
     date: '2026-10-06',
@@ -595,3 +716,79 @@ export const MONTHLY_STATS_DATA: MonthlyStats[] = [
     }
   }
 ];
+
+export const INITIAL_TRIAGES: QuickTriageData[] = [
+  {
+    id: 'tri-001',
+    appointmentId: 'apt-101',
+    protocolNumber: 'PV-2026-0901',
+    patientId: 'user-patient',
+    patientName: 'Ana Paula Silva',
+    patientPhone: '+244 923 456 789',
+    patientDocument: '006892341LA042',
+    centerId: 'mama-muxima',
+    centerName: 'Centro Médico Mamã Muxima',
+    serviceId: 'clinica-geral',
+    serviceName: 'Clínica Geral',
+    date: '2026-09-28',
+    time: '08:45',
+    weight: '64.5',
+    height: '168',
+    bmi: '22.9',
+    bmiCategory: 'Peso Normal',
+    temperature: '36.5',
+    temperatureStatus: 'normal',
+    bloodPressureSystolic: '120',
+    bloodPressureDiastolic: '80',
+    bloodPressure: '120/80 mmHg',
+    bloodPressureStatus: 'normal',
+    heartRate: '72',
+    oxygenSaturation: '98',
+    bloodGlucose: '92',
+    painLevel: 1,
+    mainSymptoms: 'Leve cansaço vespertino e aferição preventiva para consulta.',
+    symptomDuration: 'Há 3 dias',
+    allergies: 'Nenhuma alergia conhecida a medicamentos',
+    currentMedications: 'Nenhum medicamento contínuo',
+    priorityLevel: 'verde',
+    observations: 'Sinais vitais normais. Triagem rápida realizada previamente no Portal do Paciente.',
+    submittedAt: '2026-09-28T08:45:00.000Z'
+  },
+  {
+    id: 'tri-002',
+    appointmentId: 'apt-104',
+    protocolNumber: 'PV-2026-0914',
+    patientId: 'pat-999',
+    patientName: 'João Baptista Mateus',
+    patientPhone: '+244 934 111 222',
+    patientDocument: '001239845LA033',
+    centerId: 'santa-ana',
+    centerName: 'Centro Médico Santa Ana',
+    serviceId: 'urologia',
+    serviceName: 'Urologia',
+    date: '2026-09-28',
+    time: '09:15',
+    weight: '78.0',
+    height: '175',
+    bmi: '25.5',
+    bmiCategory: 'Sobrepeso Leve',
+    temperature: '36.6',
+    temperatureStatus: 'normal',
+    bloodPressureSystolic: '128',
+    bloodPressureDiastolic: '84',
+    bloodPressure: '128/84 mmHg',
+    bloodPressureStatus: 'pre_hipertensao',
+    heartRate: '76',
+    oxygenSaturation: '97',
+    bloodGlucose: '102',
+    painLevel: 0,
+    mainSymptoms: 'Prevenção anual sem queixas álgicas agudas.',
+    symptomDuration: 'Sem sintomas agudos',
+    allergies: 'Nenhuma',
+    currentMedications: 'Nenhum',
+    priorityLevel: 'verde',
+    observations: 'Pressão limítrofe, orientado sobre hidratação e redução de sódio.',
+    submittedAt: '2026-09-28T09:15:00.000Z'
+  }
+];
+

@@ -95,6 +95,32 @@
         "status": { "type": "string", "enum": ["delivered", "pending"] }
       },
       "required": ["id", "appointmentId", "recipientContact", "type", "message", "status"]
+    },
+    "QuickTriage": {
+      "title": "QuickTriage",
+      "description": "Ficha de triagem rápida pré-consulta com registro de sinais vitais (peso, temperatura, pressão arterial, etc.)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "appointmentId": { "type": "string" },
+        "protocolNumber": { "type": "string" },
+        "patientId": { "type": "string" },
+        "patientName": { "type": "string" },
+        "patientPhone": { "type": "string" },
+        "centerId": { "type": "string" },
+        "date": { "type": "string" },
+        "time": { "type": "string" },
+        "weight": { "type": "string" },
+        "height": { "type": "string" },
+        "bmi": { "type": "string" },
+        "temperature": { "type": "string" },
+        "bloodPressure": { "type": "string" },
+        "heartRate": { "type": "string" },
+        "mainSymptoms": { "type": "string" },
+        "priorityLevel": { "type": "string", "enum": ["verde", "amarelo", "laranja", "azul"] },
+        "submittedAt": { "type": "string" }
+      },
+      "required": ["id", "patientId", "patientName", "weight", "temperature", "bloodPressure", "priorityLevel", "submittedAt"]
     }
   },
   "firestore": {
@@ -113,6 +139,10 @@
     "/notifications/{notificationId}": {
       "schema": "NotificationLog",
       "description": "Lembretes e notificações automáticas de consultas"
+    },
+    "/triages/{triageId}": {
+      "schema": "QuickTriage",
+      "description": "Fichas de triagem rápida e aferição pré-consulta dos pacientes"
     }
   }
 }

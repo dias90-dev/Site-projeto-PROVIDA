@@ -155,18 +155,86 @@ export const SupportChatWidget: React.FC = () => {
       q.includes('santo andre') ||
       q.includes('santa ana') ||
       q.includes('onde') ||
-      q.includes('viana') ||
+      q.includes('ingombota') ||
+      q.includes('praia do bispo') ||
+      q.includes('palanca') ||
       q.includes('kilamba') ||
-      q.includes('cazenga') ||
       q.includes('morada') ||
       q.includes('endereco') ||
       q.includes('localizacao')
     ) {
       return {
-        text: `🏥 **Nossos 3 Centros Médicos Pró-Vida:**\n\n1. **Centro Mamã Muxima (Viana):** Av. Deolinda Rodrigues Km 14. Especialista em Pediatria, Clínica Geral, Ecografia 4D e Laboratório 24h.\n2. **Centro Santo André (Kilamba / Belas):** Centralidade do Kilamba, Bloco C-12. Referência em Pré-Natal, Ginecologia e Saúde Materno-Infantil.\n3. **Centro Santa Ana (Cazenga):** Rua dos Comandos, Zona 4. Foco em Urologia, Triagem Clínica Rápida e Exames Físicos admissionais.`,
+        text: `🏥 **Localizações Oficiais dos 3 Centros Médicos Pró-Vida:**\n\n1. **Centro Médico Mamã Muxima (Ingombota / Praia do Bispo):**\n   - **Endereço:** Bairro Praia do Bispo, Rua Agostinho Neto, Travessa II/BETE, Distrito Urbano da Ingombota, Município de Luanda, Província de Luanda.\n   - **Direção Clínica:** Dra. Emília Kajika Raimundo M. Adão.\n   - **Especialidades:** Pediatria, Clínica Geral, Ecografia Normal e Laboratório 24h.\n\n2. **Centro Médico Santa Ana (Palanca / Kilamba Kiaxi):**\n   - **Endereço:** Bairro Palanca, Rua Ngola Yeto, Zona 2, Casa nº 18, Distrito Urbano do Kilamba Kiaxi, Luanda.\n   - **Direção Clínica:** Dr. Ericson Cassoma.\n   - **Especialidades:** Urologia, Triagem Rápida e Exames Físicos admissionais.\n\n3. **Centro Médico Santo André (Kilamba / Belas):**\n   - **Endereço:** Quarteirão B, Centralidade do Kilamba, Bloco C-12, Belas, Luanda.\n   - **Direção Clínica:** Dra. Esperança Bento.\n   - **Especialidades:** Pré-Natal, Ginecologia e Saúde Materno-Infantil.\n\n**Administradora Geral do Projeto Pró-Vida:** Irmã Ventura (Cáritas de Angola).`,
         actions: [
           { label: 'Ver detalhes dos 3 Centros', actionType: 'open_centers' },
           { label: 'Marcar num centro', actionType: 'open_booking' }
+        ]
+      };
+    }
+
+    // Governação, Direção Clínica & Administração
+    if (
+      q.includes('administra') ||
+      q.includes('ventura') ||
+      q.includes('irma') ||
+      q.includes('irmã') ||
+      q.includes('diretor') ||
+      q.includes('diretora') ||
+      q.includes('direcao') ||
+      q.includes('direção') ||
+      q.includes('emilia') ||
+      q.includes('emília') ||
+      q.includes('ericson') ||
+      q.includes('cassoma') ||
+      q.includes('responsavel') ||
+      q.includes('lideranca')
+    ) {
+      return {
+        text: `🏛️ **Corpo Diretivo e Governação do Projeto Pró-Vida (Cáritas de Angola):**\n\n• **Administradora do Projeto Pró-Vida:** Irmã Ventura\n• **Diretora Clínica do Centro Médico Mamã Muxima:** Dra. Emília Kajika Raimundo M. Adão\n• **Diretor Clínico do Centro Médico Santa Ana:** Dr. Ericson Cassoma\n• **Diretora Clínica do Centro Médico Santo André:** Dra. Esperança Bento\n\nA rede opera com total compromisso social e médico-hospitalar para acolhimento humanizado de todas as famílias angolanas.`,
+        actions: [
+          { label: 'Ver Centros Médicos', actionType: 'open_centers' },
+          { label: 'Marcar Consulta', actionType: 'open_booking' }
+        ]
+      };
+    }
+
+    // Triagem Rápida & Sinais Vitais
+    if (
+      q.includes('triagem') ||
+      q.includes('sinais vitais') ||
+      q.includes('pressao') ||
+      q.includes('pressão') ||
+      q.includes('temperatura') ||
+      q.includes('peso') ||
+      q.includes('aferir') ||
+      q.includes('sintomas') ||
+      q.includes('imc')
+    ) {
+      return {
+        text: `⚡ **Ficha de Triagem Rápida Pré-Consulta:**\n\nAgora você pode registrar seus sinais vitais no **Portal do Paciente** antes de ser atendido:\n\n• **Peso Corporal (kg)** e Altura com cálculo automático de IMC.\n• **Temperatura Axilar (ºC)** com alerta de estado febril.\n• **Pressão Arterial (Sistólica/Diastólica mmHg)** com classificação da OMS.\n• **Frequência Cardíaca, Oximetria e Escala de Dor (0 a 10)**.\n\nEsses dados são sincronizados em tempo real com o prontuário do médico para acelerar o seu acolhimento nos centros Mamã Muxima, Santo André e Santa Ana. Você também pode baixar a Ficha de Triagem em PDF!`,
+        actions: [
+          { label: '⚡ Abrir Ficha de Triagem', actionType: 'open_services' },
+          { label: '🗓️ Marcar Consulta', actionType: 'open_booking' }
+        ]
+      };
+    }
+
+    // Redes Sociais (Facebook e Instagram)
+    if (
+      q.includes('facebook') ||
+      q.includes('instagram') ||
+      q.includes('redes sociais') ||
+      q.includes('rede social') ||
+      q.includes('seguir') ||
+      q.includes('pagina') ||
+      q.includes('insta') ||
+      q.includes('fb')
+    ) {
+      return {
+        text: `📱 **Redes Sociais Oficiais do Projeto Pró-Vida (Cáritas de Angola):**\n\nSiga-nos para acompanhar campanhas de vacinação, saúde preventiva, horários especiais e novidades:\n\n• **Facebook Oficial:** [facebook.com/caritasdeangola](https://www.facebook.com/caritasdeangola)\n• **Instagram Oficial:** [@caritasdeangola](https://www.instagram.com/caritasdeangola)\n\nOs botões com links diretos também estão disponíveis no topo (cabeçalho), no rodapé e no Portal do Paciente!`,
+        actions: [
+          { label: '🗓️ Marcar Consulta', actionType: 'open_booking' },
+          { label: '📞 Ligar para a Recepção', actionType: 'call_support' }
         ]
       };
     }
@@ -191,24 +259,24 @@ export const SupportChatWidget: React.FC = () => {
       };
     }
 
-    // Hospedagem e Gratuidade
+    // Atendimento Humanizado & Acolhimento
     if (
+      q.includes('humanizado') ||
+      q.includes('acolhimento') ||
       q.includes('hospedagem') ||
+      q.includes('atendimento') ||
       q.includes('gratis') ||
       q.includes('gratuito') ||
       q.includes('preco') ||
       q.includes('valor') ||
       q.includes('pagar') ||
-      q.includes('custo') ||
-      q.includes('social') ||
-      q.includes('dormir') ||
-      q.includes('provincias')
+      q.includes('custo')
     ) {
       return {
-        text: `🤝 **Hospedagem & Atendimento Gratuito / Subsidiado:**\n\nO Projeto Pró-Vida é uma iniciativa de cariz social e humanitário. Oferecemos atendimento gratuito ou com taxa simbólica comunitária.\n\nPara pacientes que viajam de províncias ou zonas periféricas distantes, disponibilizamos **acolhimento diurno e apoio logístico gratuito** para que façam as suas consultas e exames com total dignidade e conforto.`,
+        text: `🤝 **Atendimento Humanizado de Excelência:**\n\nO Projeto Pró-Vida é uma iniciativa pautada no acolhimento digno, respeito e carinho a cada utente. Oferecemos atendimento humanizado de referência nos centros Mamã Muxima, Santo André e Santa Ana.\n\nNossa missão é assegurar consultas de qualidade, escuta atenta dos profissionais de saúde e agendamento digital rápido e simplificado para todas as famílias.`,
         actions: [
-          { label: 'Agendar Consulta Social', actionType: 'open_booking' },
-          { label: '📞 Linha de Apoio Social', actionType: 'call_support' }
+          { label: 'Marcar Consulta', actionType: 'open_booking' },
+          { label: '📞 Linha de Atendimento', actionType: 'call_support' }
         ]
       };
     }
@@ -320,8 +388,12 @@ export const SupportChatWidget: React.FC = () => {
           <div className="bg-gradient-to-r from-teal-700 via-teal-800 to-slate-900 text-white p-4 flex items-center justify-between shadow-xs">
             <div className="flex items-center gap-3">
               <div className="relative">
-                <div className="w-10 h-10 rounded-2xl bg-teal-500/30 border border-teal-400/40 flex items-center justify-center text-teal-200">
-                  <Bot className="w-6 h-6" />
+                <div className="w-10 h-10 rounded-2xl bg-white p-0.5 border border-white/30 flex items-center justify-center shadow-xs overflow-hidden">
+                  <img
+                    src="/caritas_logo.png"
+                    alt="Logo Cáritas Oficial"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
                 <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 border-2 border-teal-900 rounded-full" />
               </div>
@@ -335,7 +407,7 @@ export const SupportChatWidget: React.FC = () => {
                   </span>
                 </div>
                 <p className="text-[11px] text-teal-200/90 leading-tight mt-0.5">
-                  Enfª Paula • Dúvidas de Marcação & Documentos
+                  Enfª Paula • Projeto Pró-Vida (Cáritas)
                 </p>
               </div>
             </div>
@@ -368,8 +440,12 @@ export const SupportChatWidget: React.FC = () => {
                 className={`flex gap-2.5 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
               >
                 {msg.sender === 'assistant' && (
-                  <div className="w-7 h-7 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center shrink-0 mt-0.5 font-bold text-[10px]">
-                    PV
+                  <div className="w-7 h-7 rounded-xl bg-white border border-slate-200 p-0.5 flex items-center justify-center shrink-0 mt-0.5 shadow-2xs overflow-hidden">
+                    <img
+                      src="/caritas_logo.png"
+                      alt="Cáritas"
+                      className="w-full h-full object-contain"
+                    />
                   </div>
                 )}
 
@@ -448,10 +524,10 @@ export const SupportChatWidget: React.FC = () => {
               🧪 Jejum e preparo
             </button>
             <button
-              onClick={() => handleUserSendMessage('Como funciona a hospedagem e atendimento gratuito?')}
+              onClick={() => handleUserSendMessage('Como funciona o atendimento humanizado e acolhimento?')}
               className="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-600 whitespace-nowrap transition-colors border border-slate-200"
             >
-              🏠 Hospedagem gratuita
+              🤝 Atendimento humanizado
             </button>
             <button
               onClick={() => handleUserSendMessage('Onde fica o centro Mamã Muxima, Santo André e Santa Ana?')}

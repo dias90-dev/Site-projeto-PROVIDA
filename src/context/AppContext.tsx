@@ -9,7 +9,8 @@ import {
   MedicalRecord,
   NotificationLog,
   MedicalCenterId,
-  ServiceType
+  ServiceType,
+  QuickTriageData
 } from '../types';
 import {
   MEDICAL_CENTERS,
@@ -18,7 +19,8 @@ import {
   DEMO_USERS,
   INITIAL_APPOINTMENTS,
   INITIAL_MEDICAL_RECORDS,
-  INITIAL_NOTIFICATIONS
+  INITIAL_NOTIFICATIONS,
+  INITIAL_TRIAGES
 } from '../data/mockData';
 import { db } from '../firebase';
 import {
@@ -51,6 +53,14 @@ interface AppContextType {
 
   medicalRecords: MedicalRecord[];
   addMedicalRecord: (record: Omit<MedicalRecord, 'id'>) => MedicalRecord;
+
+  // Triagem Rápida Pré-Consulta
+  triages: QuickTriageData[];
+  saveQuickTriage: (triageData: Omit<QuickTriageData, 'id' | 'submittedAt'>) => Promise<QuickTriageData>;
+  isTriageModalOpen: boolean;
+  setIsTriageModalOpen: (open: boolean) => void;
+  selectedAppointmentForTriage: Appointment | null;
+  setSelectedAppointmentForTriage: (apt: Appointment | null) => void;
 
   doctorSchedules: Record<string, string[]>; // doctorId -> list of active slots
   updateDoctorSlots: (doctorId: string, slots: string[]) => void;
@@ -89,6 +99,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [appointments, setAppointments] = useState<Appointment[]>(INITIAL_APPOINTMENTS);
   const [medicalRecords, setMedicalRecords] = useState<MedicalRecord[]>(INITIAL_MEDICAL_RECORDS);
   const [notifications, setNotifications] = useState<NotificationLog[]>(INITIAL_NOTIFICATIONS);
+  const [triages, setTriages] = useState<QuickTriageData[]>(INITIAL_TRIAGES);
+  const [isTriageModalOpen, setIsTriageModalOpen] = useState(false);
+  const [selectedAppointmentForTriage, setSelectedAppointmentForTriage] = useState<Appointment | null>(null);
   const [isFirestoreSynced, setIsFirestoreSynced] = useState<boolean>(false);
 
   // Doctor schedules state
@@ -146,6 +159,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           INITIAL_NOTIFICATIONS.forEach(notif => {
             const ref = doc(db, 'notifications', notif.id);
             batch.set(ref, notif);
+          });
+
+          // Seed demo quick triages
+          INITIAL_TRIAGES.forEach(tri => {
+            const ref = doc(db, 'triages', tri.id);
+            batch.set(ref, tri);
           });
 
           // Seed demo users
@@ -223,11 +242,30 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
     );
 
+    // 4. Listen for real-time quick triages (fichas de triagem pré-consulta)
+    const unsubscribeTriages = onSnapshot(
+      query(collection(db, 'triages')),
+      snapshot => {
+        if (!snapshot.empty) {
+          const loaded: QuickTriageData[] = [];
+          snapshot.forEach(docSnap => {
+            loaded.push(docSnap.data() as QuickTriageData);
+          });
+          loaded.sort((a, b) => new Date(b.submittedAt || 0).getTime() - new Date(a.submittedAt || 0).getTime());
+          setTriages(loaded);
+        }
+      },
+      error => {
+        console.warn('Firestore triages listener notice:', error);
+      }
+    );
+
     return () => {
       isMounted = false;
       unsubscribeAppointments();
       unsubscribeRecords();
       unsubscribeNotifications();
+      unsubscribeTriages();
     };
   }, []);
 
@@ -432,6 +470,39 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     showToast('Horários de atendimento atualizados na agenda.');
   };
 
+  const saveQuickTriage = async (triageData: Omit<QuickTriageData, 'id' | 'submittedAt'>): Promise<QuickTriageData> => {
+    const newTriage: QuickTriageData = {
+      ...triageData,
+      id: `tri-${Date.now()}`,
+      submittedAt: new Date().toISOString()
+    };
+
+    // 1. Optimistic update in triages
+    setTriages(prev => [newTriage, ...prev]);
+
+    // 2. If associated with an appointment, update the appointment locally and in Firestore
+    if (newTriage.appointmentId) {
+      setAppointments(prev =>
+        prev.map(apt => (apt.id === newTriage.appointmentId ? { ...apt, triage: newTriage } : apt))
+      );
+
+      updateDoc(doc(db, 'appointments', newTriage.appointmentId), { triage: newTriage }).catch(err => {
+        console.warn('Erro ao associar triagem ao agendamento no Firestore:', err);
+      });
+    }
+
+    // 3. Save to Firestore triages collection
+    try {
+      await setDoc(doc(db, 'triages', newTriage.id), newTriage);
+    } catch (err) {
+      console.warn('Erro ao salvar triagem rápida no Firestore:', err);
+    }
+
+    showToast(`✅ Ficha de Triagem Rápida registada com sucesso! Sinais vitais guardados.`);
+    setIsTriageModalOpen(false);
+    return newTriage;
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -450,6 +521,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         completeAppointment,
         medicalRecords,
         addMedicalRecord,
+        triages,
+        saveQuickTriage,
+        isTriageModalOpen,
+        setIsTriageModalOpen,
+        selectedAppointmentForTriage,
+        setSelectedAppointmentForTriage,
         doctorSchedules,
         updateDoctorSlots,
         notifications,

@@ -28,6 +28,9 @@ export interface MedicalCenter {
   image: string;
   description: string;
   facilities: string[];
+  clinicalDirector?: string; // Direção Clínica
+  municipality?: string;
+  province?: string;
 }
 
 export type ServiceType =
@@ -91,6 +94,48 @@ export interface Appointment {
   reminderEmail: boolean;
   reminderSent: boolean;
   isTelemedicine?: boolean;
+  triage?: QuickTriageData;
+}
+
+export type TriagePriorityLevel = 'verde' | 'amarelo' | 'laranja' | 'azul';
+
+export interface QuickTriageData {
+  id: string;
+  appointmentId?: string; // Optional: linked to a specific appointment
+  protocolNumber?: string;
+  patientId: string;
+  patientName: string;
+  patientPhone?: string;
+  patientDocument?: string;
+  centerId?: MedicalCenterId;
+  centerName?: string;
+  serviceId?: ServiceType;
+  serviceName?: string;
+  date: string;
+  time: string;
+  // Vital Signs
+  weight: number | string; // Peso em kg
+  height?: number | string; // Altura em cm
+  bmi?: number | string; // IMC (kg/m²)
+  bmiCategory?: string; // Abaixo do peso, Normal, Sobrepeso, Obesidade
+  temperature: number | string; // Temperatura em ºC
+  temperatureStatus?: 'normal' | 'febril' | 'febre_alta';
+  bloodPressureSystolic: number | string; // Pressão Sistólica (mmHg)
+  bloodPressureDiastolic: number | string; // Pressão Diastólica (mmHg)
+  bloodPressure: string; // Ex: "120/80 mmHg"
+  bloodPressureStatus?: 'otima' | 'normal' | 'pre_hipertensao' | 'hipertensao_1' | 'hipertensao_2' | 'hipotensao';
+  heartRate?: number | string; // bpm
+  oxygenSaturation?: number | string; // SpO2 %
+  bloodGlucose?: number | string; // Glicemia mg/dL
+  // Clinical Screening
+  painLevel?: number; // 0-10
+  mainSymptoms?: string; // Queixa principal
+  symptomDuration?: string; // Ex: "Hoje", "Há 2 dias"
+  allergies?: string; // Alergias a medicamentos
+  currentMedications?: string; // Medicamentos em uso
+  priorityLevel: TriagePriorityLevel; // Classificação de Risco (Manchester simplificado)
+  observations?: string;
+  submittedAt: string;
 }
 
 export interface MedicalRecord {

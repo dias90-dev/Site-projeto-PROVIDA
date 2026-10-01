@@ -229,12 +229,16 @@ export const BookingModal: React.FC = () => {
         {/* Header */}
         <div className="bg-gradient-to-r from-teal-700 via-teal-800 to-slate-900 text-white px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-teal-300">
-              <Calendar className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-white p-0.5 flex items-center justify-center shadow-xs overflow-hidden">
+              <img
+                src="/caritas_logo.png"
+                alt="Logo Oficial Cáritas Pró-Vida"
+                className="w-full h-full object-contain"
+              />
             </div>
             <div>
               <span className="text-[10px] font-bold uppercase tracking-widest text-teal-300">
-                PROJETO PRÓ-VIDA
+                PROJETO PRÓ-VIDA • CÁRITAS
               </span>
               <h2 className="text-base sm:text-lg font-bold leading-tight">
                 Marcação de Consulta & Exames
@@ -298,7 +302,7 @@ export const BookingModal: React.FC = () => {
                     >
                       <div className="flex items-center justify-between mb-1.5">
                         <span className="text-[10px] font-bold text-teal-700 uppercase">
-                          {c.id === 'mama-muxima' ? 'Viana' : c.id === 'santo-andre' ? 'Kilamba' : 'Cazenga'}
+                          {c.id === 'mama-muxima' ? 'Ingombota / Praia do Bispo' : c.id === 'santo-andre' ? 'Kilamba / Belas' : 'Palanca / Kilamba Kiaxi'}
                         </span>
                         {centerId === c.id && (
                           <CheckCircle2 className="w-4 h-4 text-teal-600" />

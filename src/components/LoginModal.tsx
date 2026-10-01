@@ -46,15 +46,24 @@ export const LoginModal: React.FC = () => {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/70 backdrop-blur-xs overflow-y-auto animate-fadeIn">
       <div className="bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh]">
         {/* Header */}
-        <div className="bg-gradient-to-r from-teal-700 to-slate-900 text-white p-6 flex items-center justify-between">
+        <div className="bg-gradient-to-r from-teal-700 via-teal-800 to-slate-900 text-white p-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-teal-300">
-              <Lock className="w-5 h-5" />
+            <div className="w-12 h-12 rounded-2xl bg-white p-1 flex items-center justify-center shadow-xs shrink-0 overflow-hidden">
+              <img
+                src="/caritas_logo.png"
+                alt="Logo Oficial Cáritas"
+                className="w-full h-full object-contain"
+              />
             </div>
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-teal-300">
-                PROJETO PRÓ-VIDA
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-teal-300">
+                  PROJETO PRÓ-VIDA
+                </span>
+                <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-red-500/20 text-red-300 uppercase">
+                  CÁRITAS
+                </span>
+              </div>
               <h2 className="text-base sm:text-lg font-bold leading-tight">
                 {mode === 'login' ? 'Acesso ao Sistema Clínico' : 'Cadastro de Novo Paciente'}
               </h2>
@@ -130,8 +139,8 @@ export const LoginModal: React.FC = () => {
                 <ShieldAlert className="w-4 h-4" />
               </div>
               <div className="truncate">
-                <div className="font-bold text-slate-800">Administrador Geral</div>
-                <div className="text-[10px] text-blue-600 font-medium">Perfil: Gestão & Relatórios</div>
+                <div className="font-bold text-slate-800">Irmã Ventura</div>
+                <div className="text-[10px] text-blue-600 font-medium">Administradora do Projeto</div>
               </div>
             </button>
           </div>

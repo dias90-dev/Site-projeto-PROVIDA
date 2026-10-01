@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { generateAppointmentPDF } from '../utils/pdfGenerator';
+import { generateAppointmentPDF, generateMedicalRecordPDF, generateTriagePDF } from '../utils/pdfGenerator';
+import { QuickTriageForm } from './QuickTriageForm';
 import {
   Calendar,
   Download,
@@ -18,7 +19,15 @@ import {
   Pill,
   FileCheck,
   Stethoscope,
-  Video
+  Video,
+  Scale,
+  Thermometer,
+  Gauge,
+  Heart,
+  Facebook,
+  Instagram,
+  Sparkles,
+  ExternalLink
 } from 'lucide-react';
 
 export const PatientDashboard: React.FC = () => {
@@ -26,16 +35,19 @@ export const PatientDashboard: React.FC = () => {
     currentUser,
     appointments,
     medicalRecords,
+    triages,
     centers,
     services,
     doctors,
     cancelAppointment,
     triggerNotification,
     setIsBookingModalOpen,
+    setIsTriageModalOpen,
+    setSelectedAppointmentForTriage,
     showToast
   } = useApp();
 
-  const [activeTab, setActiveTab] = useState<'appointments' | 'records' | 'reminders'>('appointments');
+  const [activeTab, setActiveTab] = useState<'appointments' | 'triage' | 'records' | 'reminders'>('appointments');
   const [statusFilter, setStatusFilter] = useState<'all' | 'confirmed' | 'completed' | 'cancelled'>('all');
 
   // Filter patient appointments: if logged in as patient, match by ID or patient name
@@ -59,12 +71,26 @@ export const PatientDashboard: React.FC = () => {
     return true;
   });
 
+  // Filter patient triages
+  const patientTriages = triages.filter(tri => {
+    if (currentUser.role === 'patient') {
+      return tri.patientId === currentUser.id || tri.patientName.toLowerCase().includes('ana');
+    }
+    return true;
+  });
+
   const handleDownloadPDF = (apt: (typeof appointments)[0]) => {
     const center = centers.find(c => c.id === apt.centerId);
     const service = services.find(s => s.id === apt.serviceId);
     const doctor = doctors.find(d => d.id === apt.doctorId);
     generateAppointmentPDF(apt, center, service, doctor);
     showToast(`📄 PDF da consulta ${apt.protocolNumber} baixado com sucesso!`);
+  };
+
+  const handleDownloadRecordPDF = (rec: (typeof medicalRecords)[0]) => {
+    const doctor = doctors.find(d => d.id === rec.doctorId || d.name === rec.doctorName);
+    generateMedicalRecordPDF(rec, doctor?.licenseNumber || 'OM-ANG 4892/2014');
+    showToast(`📄 Prontuário oficial com logotipo Cáritas baixado com sucesso!`);
   };
 
   const handleSendReminderTest = (apt: (typeof appointments)[0], type: 'sms' | 'email' | 'both') => {
@@ -110,6 +136,29 @@ export const PatientDashboard: React.FC = () => {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
+            <div className="hidden sm:flex items-center gap-2 bg-slate-50 px-3.5 py-2 rounded-2xl border border-slate-200">
+              <img
+                src="/caritas_logo.png"
+                alt="Logo Cáritas Oficial"
+                className="w-8 h-8 object-contain"
+              />
+              <div className="text-left">
+                <span className="text-[10px] font-bold text-red-600 block uppercase">Projeto Pró-Vida</span>
+                <span className="text-[11px] text-slate-600 font-semibold">Cáritas de Angola</span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                setSelectedAppointmentForTriage(patientAppointments[0] || null);
+                setIsTriageModalOpen(true);
+              }}
+              className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm px-4 py-3 rounded-xl shadow-md shadow-emerald-700/20 flex items-center gap-2 transition-all"
+            >
+              <Activity className="w-4 h-4 animate-pulse" />
+              <span>Ficha de Triagem Rápida</span>
+            </button>
+
             <button
               onClick={() => setIsBookingModalOpen(true)}
               className="bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-md shadow-teal-700/20 flex items-center gap-2 transition-all"
@@ -121,10 +170,10 @@ export const PatientDashboard: React.FC = () => {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex border-b border-slate-200 gap-6 text-sm font-semibold">
+        <div className="flex border-b border-slate-200 gap-4 sm:gap-6 text-sm font-semibold overflow-x-auto pb-1">
           <button
             onClick={() => setActiveTab('appointments')}
-            className={`pb-3 flex items-center gap-2 transition-all relative ${
+            className={`pb-3 flex items-center gap-2 transition-all whitespace-nowrap relative ${
               activeTab === 'appointments'
                 ? 'text-teal-700 border-b-2 border-teal-600 font-bold'
                 : 'text-slate-500 hover:text-slate-900'
@@ -135,8 +184,23 @@ export const PatientDashboard: React.FC = () => {
           </button>
 
           <button
+            onClick={() => setActiveTab('triage')}
+            className={`pb-3 flex items-center gap-2 transition-all whitespace-nowrap relative ${
+              activeTab === 'triage'
+                ? 'text-teal-700 border-b-2 border-teal-600 font-bold'
+                : 'text-slate-500 hover:text-slate-900'
+            }`}
+          >
+            <Activity className="w-4 h-4 text-emerald-600" />
+            <span>Ficha de Triagem Rápida ({patientTriages.length})</span>
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+              Sinais Vitais
+            </span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('records')}
-            className={`pb-3 flex items-center gap-2 transition-all relative ${
+            className={`pb-3 flex items-center gap-2 transition-all whitespace-nowrap relative ${
               activeTab === 'records'
                 ? 'text-teal-700 border-b-2 border-teal-600 font-bold'
                 : 'text-slate-500 hover:text-slate-900'
@@ -148,7 +212,7 @@ export const PatientDashboard: React.FC = () => {
 
           <button
             onClick={() => setActiveTab('reminders')}
-            className={`pb-3 flex items-center gap-2 transition-all relative ${
+            className={`pb-3 flex items-center gap-2 transition-all whitespace-nowrap relative ${
               activeTab === 'reminders'
                 ? 'text-teal-700 border-b-2 border-teal-600 font-bold'
                 : 'text-slate-500 hover:text-slate-900'
@@ -267,6 +331,77 @@ export const PatientDashboard: React.FC = () => {
                         )}
                       </div>
 
+                      {/* Triage Preview or Call to Action */}
+                      {apt.triage ? (
+                        <div className="mt-3 bg-teal-50/90 border border-teal-200 rounded-2xl p-3 text-xs space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="font-extrabold text-teal-900 flex items-center gap-1.5">
+                              <Activity className="w-3.5 h-3.5 text-teal-700 animate-pulse" />
+                              Triagem Pré-Consulta Registada
+                            </span>
+                            <span
+                              className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
+                                apt.triage.priorityLevel === 'verde'
+                                  ? 'bg-emerald-100 text-emerald-800'
+                                  : apt.triage.priorityLevel === 'amarelo'
+                                  ? 'bg-amber-100 text-amber-800'
+                                  : 'bg-orange-100 text-orange-800'
+                              }`}
+                            >
+                              Prioridade {apt.triage.priorityLevel.toUpperCase()}
+                            </span>
+                          </div>
+
+                          <div className="grid grid-cols-3 gap-2 text-center text-[11px]">
+                            <div className="bg-white p-1.5 rounded-xl border border-teal-100 shadow-2xs">
+                              <span className="text-[10px] text-slate-400 block font-semibold">Pressão</span>
+                              <strong className="text-slate-900 font-extrabold">{apt.triage.bloodPressure}</strong>
+                            </div>
+                            <div className="bg-white p-1.5 rounded-xl border border-teal-100 shadow-2xs">
+                              <span className="text-[10px] text-slate-400 block font-semibold">Temperatura</span>
+                              <strong className="text-slate-900 font-extrabold">{apt.triage.temperature} ºC</strong>
+                            </div>
+                            <div className="bg-white p-1.5 rounded-xl border border-teal-100 shadow-2xs">
+                              <span className="text-[10px] text-slate-400 block font-semibold">Peso</span>
+                              <strong className="text-slate-900 font-extrabold">{apt.triage.weight} kg</strong>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between pt-1 border-t border-teal-100/80">
+                            <button
+                              type="button"
+                              onClick={() => generateTriagePDF(apt.triage!)}
+                              className="text-teal-800 hover:text-teal-950 font-bold text-[11px] flex items-center gap-1 transition-colors"
+                            >
+                              <Download className="w-3 h-3 text-teal-700" />
+                              <span>Baixar Ficha Triagem (PDF)</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setSelectedAppointmentForTriage(apt);
+                                setIsTriageModalOpen(true);
+                              }}
+                              className="text-slate-500 hover:text-slate-800 text-[11px] underline font-medium"
+                            >
+                              Editar Aferição
+                            </button>
+                          </div>
+                        </div>
+                      ) : apt.status === 'confirmed' ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedAppointmentForTriage(apt);
+                            setIsTriageModalOpen(true);
+                          }}
+                          className="w-full mt-3 bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 hover:from-emerald-100 hover:to-teal-100 border border-emerald-300/80 text-emerald-900 font-bold text-xs py-2 px-3 rounded-xl flex items-center justify-center gap-2 transition-all shadow-2xs group"
+                        >
+                          <Activity className="w-3.5 h-3.5 text-emerald-600 group-hover:scale-110 transition-transform" />
+                          <span>Preencher Ficha de Triagem (Peso, Tº, PA)</span>
+                        </button>
+                      ) : null}
+
                       {/* Reminder status pill */}
                       <div className="mt-3 flex items-center gap-2 text-[11px] text-emerald-700">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
@@ -318,7 +453,116 @@ export const PatientDashboard: React.FC = () => {
           </div>
         )}
 
-        {/* TAB 2: Medical Records (Prontuário) */}
+        {/* TAB 2: Ficha de Triagem Rápida */}
+        {activeTab === 'triage' && (
+          <div className="space-y-8">
+            <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-xs space-y-2">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-teal-100 text-teal-700">
+                  <Activity className="w-5 h-5 animate-pulse" />
+                </div>
+                <div>
+                  <h3 className="text-base sm:text-lg font-black text-slate-900">
+                    Ficha de Triagem Rápida & Registro de Sinais Vitais
+                  </h3>
+                  <p className="text-xs text-slate-500">
+                    Preencha o peso, temperatura axilar e pressão arterial para agilizar seu atendimento médico nos centros Mamã Muxima, Santo André e Santa Ana.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Embedded Quick Triage Form */}
+            <QuickTriageForm
+              isEmbedded={true}
+              initialAppointment={patientAppointments.find(a => a.status === 'confirmed') || patientAppointments[0] || null}
+            />
+
+            {/* Triage History */}
+            {patientTriages.length > 0 && (
+              <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xs space-y-6">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                  <div>
+                    <h4 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                      <FileCheck className="w-4 h-4 text-teal-600" />
+                      Histórico de Fichas de Triagem & Aferições
+                    </h4>
+                    <p className="text-xs text-slate-500">
+                      Registos anteriores de sinais vitais guardados na sua conta do paciente.
+                    </p>
+                  </div>
+                  <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">
+                    {patientTriages.length} registos
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {patientTriages.map(tri => (
+                    <div
+                      key={tri.id}
+                      className="p-5 rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-slate-50 transition-all space-y-3"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-[10px] font-bold text-teal-700 uppercase tracking-wider block">
+                            Protocolo: {tri.protocolNumber || tri.id}
+                          </span>
+                          <strong className="text-sm font-bold text-slate-900">{tri.serviceName || 'Clínica Geral'}</strong>
+                        </div>
+                        <span
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            tri.priorityLevel === 'verde'
+                              ? 'bg-emerald-100 text-emerald-800'
+                              : tri.priorityLevel === 'amarelo'
+                              ? 'bg-amber-100 text-amber-800'
+                              : 'bg-orange-100 text-orange-800'
+                          }`}
+                        >
+                          Risco {tri.priorityLevel.toUpperCase()}
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                        <div className="bg-white p-2 rounded-xl border border-slate-200">
+                          <span className="text-[9px] text-slate-400 block uppercase font-bold">Pressão</span>
+                          <strong className="text-slate-900 font-extrabold">{tri.bloodPressure}</strong>
+                        </div>
+                        <div className="bg-white p-2 rounded-xl border border-slate-200">
+                          <span className="text-[9px] text-slate-400 block uppercase font-bold">Temperatura</span>
+                          <strong className="text-slate-900 font-extrabold">{tri.temperature} ºC</strong>
+                        </div>
+                        <div className="bg-white p-2 rounded-xl border border-slate-200">
+                          <span className="text-[9px] text-slate-400 block uppercase font-bold">Peso</span>
+                          <strong className="text-slate-900 font-extrabold">{tri.weight} kg</strong>
+                        </div>
+                      </div>
+
+                      {tri.mainSymptoms && (
+                        <p className="text-[11px] text-slate-600 line-clamp-2 italic bg-white p-2 rounded-xl border border-slate-100">
+                          "{tri.mainSymptoms}"
+                        </p>
+                      )}
+
+                      <div className="flex items-center justify-between text-[11px] pt-1 text-slate-400">
+                        <span>Aferido em: {tri.date} às {tri.time}</span>
+                        <button
+                          type="button"
+                          onClick={() => generateTriagePDF(tri)}
+                          className="bg-white hover:bg-teal-50 text-teal-800 border border-teal-200 font-bold px-3 py-1.5 rounded-xl flex items-center gap-1 transition-colors"
+                        >
+                          <Download className="w-3.5 h-3.5 text-teal-600" />
+                          <span>PDF</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* TAB 3: Medical Records (Prontuário) */}
         {activeTab === 'records' && (
           <div className="space-y-6">
             <div className="bg-white rounded-3xl p-6 border border-slate-200 space-y-4">
@@ -349,7 +593,7 @@ export const PatientDashboard: React.FC = () => {
                     className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-xs space-y-5"
                   >
                     {/* Record Header */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 gap-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 gap-3">
                       <div>
                         <span className="text-[11px] font-bold text-teal-700 uppercase tracking-wider">
                           Atendimento Clínico • {rec.specialty}
@@ -358,9 +602,18 @@ export const PatientDashboard: React.FC = () => {
                           Diagnóstico: {rec.diagnosis}
                         </h4>
                       </div>
-                      <div className="text-right">
-                        <span className="text-xs font-bold text-slate-700 block">{rec.date}</span>
-                        <span className="text-[11px] text-slate-400">Médico: {rec.doctorName}</span>
+                      <div className="flex flex-wrap sm:flex-col items-start sm:items-end gap-2">
+                        <div className="text-left sm:text-right">
+                          <span className="text-xs font-bold text-slate-700 block">{rec.date}</span>
+                          <span className="text-[11px] text-slate-400">Médico: {rec.doctorName}</span>
+                        </div>
+                        <button
+                          onClick={() => handleDownloadRecordPDF(rec)}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-800 text-xs font-bold border border-teal-200 transition-colors shadow-2xs"
+                        >
+                          <Download className="w-3.5 h-3.5 text-teal-700" />
+                          <span>Baixar Prontuário & Receita (PDF)</span>
+                        </button>
                       </div>
                     </div>
 
@@ -497,6 +750,50 @@ export const PatientDashboard: React.FC = () => {
             </div>
           </div>
         )}
+
+        {/* Social Media & Community Health Channels (Facebook & Instagram) */}
+        <div className="bg-gradient-to-r from-slate-900 via-teal-950 to-slate-900 text-white rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-md flex flex-col lg:flex-row items-center justify-between gap-6">
+          <div className="space-y-2 text-center lg:text-left">
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2">
+              <span className="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30 uppercase tracking-wider">
+                Comunidade & Saúde Pró-Vida
+              </span>
+              <span className="text-xs text-slate-400">Cáritas de Angola</span>
+            </div>
+            <h3 className="text-xl sm:text-2xl font-black text-white">
+              Siga o Projeto Pró-Vida no Facebook e Instagram
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+              Fique informado sobre datas de vacinação gratuita, campanhas de pré-natal comunitário, check-ups de hipertensão e diabetes e horários de atendimento nos centros Mamã Muxima, Santo André e Santa Ana.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 shrink-0">
+            {/* Facebook Button */}
+            <a
+              href="https://www.facebook.com/caritasdeangola"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Página Oficial do Facebook da Cáritas de Angola Projeto Pró-Vida"
+              className="bg-[#1877F2] hover:bg-[#166FE5] text-white font-extrabold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-md shadow-blue-900/30 flex items-center gap-2.5 transition-all transform hover:-translate-y-0.5"
+            >
+              <Facebook className="w-5 h-5 fill-white" />
+              <span>Seguir no Facebook</span>
+            </a>
+
+            {/* Instagram Button */}
+            <a
+              href="https://www.instagram.com/caritasdeangola"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram Oficial da Cáritas de Angola @caritasdeangola"
+              className="bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] hover:opacity-95 text-white font-extrabold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-md shadow-pink-900/30 flex items-center gap-2.5 transition-all transform hover:-translate-y-0.5"
+            >
+              <Instagram className="w-5 h-5 text-white" />
+              <span>Seguir no Instagram</span>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -10,6 +10,7 @@ import { AdminDashboard } from './components/AdminDashboard';
 import { TelemedicinePreview } from './components/TelemedicinePreview';
 import { BookingModal } from './components/BookingModal';
 import { LoginModal } from './components/LoginModal';
+import { QuickTriageModal } from './components/QuickTriageModal';
 import { Toast } from './components/Toast';
 import { SupportChatWidget } from './components/SupportChatWidget';
 import { Footer } from './components/Footer';
@@ -39,7 +40,7 @@ const MainContent: React.FC = () => {
           <>
             <HeroBanner />
 
-            {/* Institutional Hospitality Banner (Hospedagem & Acolhimento Social Gratuito) */}
+            {/* Institutional Banner (Atendimento Humanizado & Acolhimento) */}
             <section className="bg-gradient-to-r from-teal-900 via-slate-900 to-teal-950 text-white py-10 px-4 sm:px-6 border-y border-teal-800/40">
               <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-6">
                 <div className="flex items-start sm:items-center gap-4">
@@ -49,15 +50,15 @@ const MainContent: React.FC = () => {
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 uppercase tracking-wider">
-                        Ação Social Pró-Vida
+                        Atendimento Humanizado
                       </span>
-                      <span className="text-xs text-slate-400">Atendimento Humanizado</span>
+                      <span className="text-xs text-slate-400">Projeto Pró-Vida</span>
                     </div>
                     <h3 className="text-xl sm:text-2xl font-extrabold text-white mt-1">
-                      Hospedagem & Acolhimento Comunitário Gratuito
+                      Atendimento Humanizado & Acolhimento de Excelência
                     </h3>
                     <p className="text-xs sm:text-sm text-slate-300 max-w-2xl mt-1 leading-relaxed">
-                      Para famílias e pacientes que se deslocam de províncias ou zonas afastadas para os Centros Mamã Muxima, Santo André e Santa Ana, oferecemos apoio logístico, acolhimento diurno e marcação prioritária sem custos adicionais.
+                      Nos Centros Mamã Muxima, Santo André e Santa Ana, dedicamo-nos ao acolhimento digno, respeito e atenção integral a cada paciente e sua família, com cuidados médicos de qualidade e agendamento digital facilitado.
                     </p>
                   </div>
                 </div>
@@ -68,7 +69,7 @@ const MainContent: React.FC = () => {
                     className="bg-white hover:bg-teal-50 text-slate-900 font-bold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-md transition-all flex items-center gap-2"
                   >
                     <Calendar className="w-4 h-4 text-teal-600" />
-                    <span>Marcar Consulta Gratuita</span>
+                    <span>Marcar Consulta</span>
                   </button>
                 </div>
               </div>
@@ -142,6 +143,7 @@ const MainContent: React.FC = () => {
       <Footer />
       <BookingModal />
       <LoginModal />
+      <QuickTriageModal />
       <Toast />
       <SupportChatWidget />
     </div>

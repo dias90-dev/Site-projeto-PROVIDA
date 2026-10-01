@@ -31,14 +31,18 @@ export const HeroBanner: React.FC = () => {
           <div className="lg:col-span-7 space-y-6">
             {/* Badges */}
             <div className="flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-teal-500/20 text-teal-300 border border-teal-500/30">
-                <Sparkles className="w-3.5 h-3.5 text-teal-300" />
-                Projeto Social e Hospitalar Pró-Vida
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold bg-white/10 text-white border border-white/20 shadow-xs">
+                <img
+                  src="/caritas_logo.png"
+                  alt="Logo Cáritas Oficial"
+                  className="w-4 h-4 object-contain"
+                />
+                <span>Cáritas de Angola • Projeto Pró-Vida</span>
               </span>
 
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                 <HeartHandshake className="w-3.5 h-3.5 text-emerald-300" />
-                Hospedagem & Atendimento Gratuito/Subsidiado
+                Atendimento Humanizado & Acolhimento de Excelência
               </span>
             </div>
 
@@ -124,7 +128,7 @@ export const HeroBanner: React.FC = () => {
                     </div>
                     <div>
                       <h4 className="font-bold text-sm text-white group-hover:text-teal-300 transition-colors">
-                        Mamã Muxima (Viana)
+                        Mamã Muxima (Ingombota)
                       </h4>
                       <p className="text-xs text-slate-400">Pediátrico, Geral, Ecografia e Análises</p>
                     </div>
@@ -164,7 +168,7 @@ export const HeroBanner: React.FC = () => {
                     </div>
                     <div>
                       <h4 className="font-bold text-sm text-white group-hover:text-teal-300 transition-colors">
-                        Santa Ana (Cazenga)
+                        Santa Ana (Palanca)
                       </h4>
                       <p className="text-xs text-slate-400">Urologia, Triagem e Exames Físicos</p>
                     </div>

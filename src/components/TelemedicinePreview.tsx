@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { generateTelemedicineVoucherPDF } from '../utils/pdfGenerator';
 import {
   Video,
   Mic,
@@ -13,7 +14,8 @@ import {
   CheckCircle2,
   Calendar,
   Send,
-  Users
+  Users,
+  Download
 } from 'lucide-react';
 
 export const TelemedicinePreview: React.FC = () => {
@@ -38,9 +40,15 @@ export const TelemedicinePreview: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-12">
         {/* Banner Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-teal-500/20 text-teal-300 border border-teal-500/30">
-            <Sparkles className="w-3.5 h-3.5 text-teal-300" />
-            Inovação em Saúde Comunitária
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-white/10 text-white border border-white/20">
+              <img src="/caritas_logo.png" alt="Logo Cáritas" className="w-4 h-4 object-contain" />
+              <span>Cáritas de Angola • Projeto Pró-Vida</span>
+            </span>
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-teal-500/20 text-teal-300 border border-teal-500/30">
+              <Sparkles className="w-3.5 h-3.5 text-teal-300" />
+              Inovação em Saúde Comunitária
+            </span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight">
             Telemedicina Pró-Vida{' '}
@@ -58,7 +66,10 @@ export const TelemedicinePreview: React.FC = () => {
           {/* Virtual Top Bar */}
           <div className="bg-slate-950/80 px-6 py-3.5 flex items-center justify-between border-b border-white/10 text-xs">
             <div className="flex items-center gap-2.5">
-              <span className="w-3 h-3 rounded-full bg-emerald-400 animate-ping" />
+              <div className="w-6 h-6 rounded-md bg-white p-0.5 flex items-center justify-center shrink-0">
+                <img src="/caritas_logo.png" alt="Cáritas" className="w-full h-full object-contain" />
+              </div>
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
               <span className="font-bold text-slate-200">
                 Simulador de Sala de Teleconsulta Pró-Vida
               </span>
@@ -208,9 +219,27 @@ export const TelemedicinePreview: React.FC = () => {
           </div>
 
           {isRegistered ? (
-            <div className="p-4 bg-emerald-500/20 border border-emerald-500/40 rounded-2xl text-xs text-emerald-300 font-semibold flex items-center justify-center gap-2">
-              <CheckCircle2 className="w-4 h-4" />
-              <span>Obrigado! Seu contato foi registrado na lista de espera prioritária.</span>
+            <div className="space-y-4">
+              <div className="p-4 bg-emerald-500/20 border border-emerald-500/40 rounded-2xl text-xs text-emerald-300 font-semibold flex items-center justify-center gap-2">
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
+                <span>Inscrição registada com sucesso! Código prioritário: <strong>PV-TELE-2026-VIP</strong></span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  generateTelemedicineVoucherPDF(
+                    'Utente Prioritário Pró-Vida',
+                    waitlistPhone || '+244 923 000 000',
+                    waitlistEmail || 'utente@provida.ao',
+                    'PV-TELE-2026-VIP'
+                  );
+                  showToast('📄 Comprovativo Oficial de Telemedicina com logotipo Cáritas baixado em PDF!');
+                }}
+                className="bg-white text-slate-900 hover:bg-slate-100 font-bold text-xs px-5 py-3 rounded-xl shadow-md inline-flex items-center gap-2 transition-all hover:scale-[1.02]"
+              >
+                <Download className="w-4 h-4 text-teal-600" />
+                <span>Baixar Comprovativo Oficial com Logotipo Cáritas (PDF)</span>
+              </button>
             </div>
           ) : (
             <form onSubmit={handleRegisterWaitlist} className="space-y-3">

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { MONTHLY_STATS_DATA } from '../data/mockData';
+import { MONTHLY_STATS_DATA, PROJECT_LEADERSHIP } from '../data/mockData';
+import { generateMonthlyReportPDF } from '../utils/pdfGenerator';
 import {
   BarChart3,
   TrendingUp,
@@ -15,7 +16,10 @@ import {
   Stethoscope,
   Phone,
   Mail,
-  Search
+  Search,
+  Award,
+  ExternalLink,
+  MapPin
 } from 'lucide-react';
 
 export const AdminDashboard: React.FC = () => {
@@ -63,6 +67,11 @@ export const AdminDashboard: React.FC = () => {
     showToast('📊 Relatório de atendimentos exportado em formato CSV!');
   };
 
+  const handleExportOfficialPDF = () => {
+    generateMonthlyReportPDF(currentMonthData, filteredAppointments);
+    showToast('📄 Relatório Mensal Oficial com logotipo Cáritas baixado em PDF!');
+  };
+
   const handleBatchReminder = () => {
     const pendingConfirmed = filteredAppointments.filter(a => a.status === 'confirmed');
     pendingConfirmed.forEach(apt => {
@@ -76,21 +85,30 @@ export const AdminDashboard: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
         {/* Header */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-100 text-blue-800 mb-2">
-              <BarChart3 className="w-3.5 h-3.5" />
-              Painel de Controle e Relatórios
+          <div className="flex items-start gap-4">
+            <div className="hidden sm:flex w-14 h-14 rounded-2xl bg-white p-1 border border-slate-200 shadow-xs shrink-0 items-center justify-center">
+              <img
+                src="/caritas_logo.png"
+                alt="Logo Oficial Cáritas"
+                className="w-full h-full object-contain"
+              />
             </div>
-            <div className="inline-flex items-center gap-1.5 ml-2 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 mb-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              Firebase Firestore em Tempo Real
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-100 text-blue-800 mb-2">
+                <BarChart3 className="w-3.5 h-3.5" />
+                Painel de Controle e Relatórios
+              </div>
+              <div className="inline-flex items-center gap-1.5 ml-2 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 mb-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                Firebase Firestore em Tempo Real
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+                Relatórios Mensais de Atendimentos Realizados
+              </h1>
+              <p className="text-xs text-slate-500 mt-1">
+                Indicadores consolidados dos 3 Centros Médicos: Mamã Muxima, Santo André e Santa Ana.
+              </p>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-              Relatórios Mensais de Atendimentos Realizados
-            </h1>
-            <p className="text-xs text-slate-500 mt-1">
-              Indicadores consolidados dos 3 Centros Médicos: Mamã Muxima, Santo André e Santa Ana.
-            </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -108,12 +126,79 @@ export const AdminDashboard: React.FC = () => {
             </select>
 
             <button
-              onClick={handleExportCSV}
-              className="bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-xs flex items-center gap-2 transition-all"
+              onClick={handleExportOfficialPDF}
+              className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-xs flex items-center gap-2 transition-all hover:scale-[1.02]"
             >
               <Download className="w-4 h-4" />
-              <span>Exportar Dados (CSV)</span>
+              <span>Baixar Relatório Oficial (PDF)</span>
             </button>
+
+            <button
+              onClick={handleExportCSV}
+              className="bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 flex items-center gap-2 transition-all"
+            >
+              <Download className="w-4 h-4 text-slate-600" />
+              <span>CSV</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Institutional Governance Banner */}
+        <div className="bg-gradient-to-r from-slate-900 via-teal-950 to-slate-900 rounded-3xl p-6 sm:p-7 text-white shadow-xl border border-teal-500/20">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-white p-1 flex items-center justify-center shrink-0 shadow-md overflow-hidden">
+                <img
+                  src="/caritas_logo.png"
+                  alt="Logotipo Oficial Cáritas"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-teal-500/20 text-teal-300 border border-teal-500/30 uppercase tracking-wider">
+                    Governação Executiva & Pastoral
+                  </span>
+                  <span className="text-xs text-slate-300">Cáritas de Angola • Projeto Pró-Vida</span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-extrabold text-white mt-1">
+                  Administradora Geral: <span className="text-teal-300">{PROJECT_LEADERSHIP.administrator}</span>
+                </h2>
+                <p className="text-xs text-slate-300 mt-0.5">
+                  Supervisão institucional e gestão centralizada dos 3 centros médicos de Luanda.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs bg-white/5 border border-white/10 p-3.5 rounded-2xl">
+              <div className="p-2.5 rounded-xl bg-slate-900/60 border border-white/5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-teal-400 font-bold uppercase">Centro Mamã Muxima</span>
+                  <span className="text-[10px] text-slate-400">Ingombota</span>
+                </div>
+                <div className="font-bold text-white text-xs mt-1">
+                  {PROJECT_LEADERSHIP.clinicalDirectors.mamaMuxima.name}
+                </div>
+                <div className="text-[10px] text-teal-200 mt-0.5">Direção Clínica</div>
+                <div className="text-[10px] text-slate-400 mt-1 line-clamp-1">
+                  Praia do Bispo, Rua Agostinho Neto, Travessa II/BETE
+                </div>
+              </div>
+
+              <div className="p-2.5 rounded-xl bg-slate-900/60 border border-white/5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-teal-400 font-bold uppercase">Centro Santa Ana</span>
+                  <span className="text-[10px] text-slate-400">Kilamba Kiaxi</span>
+                </div>
+                <div className="font-bold text-white text-xs mt-1">
+                  {PROJECT_LEADERSHIP.clinicalDirectors.santaAna.name}
+                </div>
+                <div className="text-[10px] text-teal-200 mt-0.5">Direção Clínica</div>
+                <div className="text-[10px] text-slate-400 mt-1 line-clamp-1">
+                  Bairro Palanca, Rua Ngola Yeto, Zona 2, casa nº 18
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -318,10 +403,10 @@ export const AdminDashboard: React.FC = () => {
 
             <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-600 space-y-2">
               <span className="font-bold text-slate-800 block">
-                Impacto Social do Projeto Pró-Vida:
+                Atendimento Humanizado do Projeto Pró-Vida:
               </span>
               <p className="text-[11px] leading-relaxed">
-                As consultas e exames físicos contam com subsídio integral ou taxa simbólica social, permitindo o acolhimento digno de comunidades vulneráveis em Viana, Belas e Cazenga.
+                As consultas e exames contam com acolhimento digno, respeito e atenção integral para todas as famílias em Ingombota/Praia do Bispo, Belas/Kilamba e Palanca/Kilamba Kiaxi.
               </p>
             </div>
           </div>
